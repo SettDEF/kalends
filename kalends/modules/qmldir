@@ -1,0 +1,27 @@
+singleton Store 1.0 Store.qml
+DayCell 1.0 DayCell.qml
+Agenda 1.0 Agenda.qml
+singleton Settings 1.0 Settings.qml
+SettingsPanel 1.0 SettingsPanel.qml
+CalendarChips 1.0 CalendarChips.qml
+JumpField 1.0 JumpField.qml
+QuickAdd 1.0 QuickAdd.qml
+EventEditor 1.0 EventEditor.qml
+MonthView 1.0 MonthView.qml
+WeekView 1.0 WeekView.qml
+EventPill 1.0 EventPill.qml
+MiniMonth 1.0 MiniMonth.qml
+CalendarList 1.0 CalendarList.qml
+singleton Cal 1.0 Cal.qml
+singleton Nav 1.0 Nav.qml
+singleton Console 1.0 Console.qml
+Toolbar 1.0 Toolbar.qml
+Sheet 1.0 Sheet.qml
+MoreMenu 1.0 MoreMenu.qml
+ShortcutsSheet 1.0 ShortcutsSheet.qml
+Panel 1.0 Panel.qml
+Label 1.0 Label.qml
+Toggle 1.0 Toggle.qml
+Sidebar 1.0 Sidebar.qml
+DayPanel 1.0 DayPanel.qml
+CalNav 1.0 CalNav.qml

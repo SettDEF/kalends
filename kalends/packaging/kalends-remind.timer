@@ -1,0 +1,15 @@
+[Unit]
+Description=Kalends — check for upcoming events every minute
+
+[Timer]
+# Every minute, not every few seconds: the lead window is ten minutes, so a
+# minute of granularity is invisible, and the check is one CLI run.
+OnBootSec=1min
+OnUnitActiveSec=1min
+# Catches up after suspend or a machine that was off, so waking at 09:05
+# still announces a 09:10 meeting instead of staying silent.
+Persistent=true
+AccuracySec=15s
+
+[Install]
+WantedBy=timers.target

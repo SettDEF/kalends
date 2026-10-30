@@ -1,0 +1,16 @@
+[Unit]
+Description=Kalends — sync every 5 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+# Catches up after suspend or downtime, so a laptop that was shut all day
+# syncs once on waking instead of waiting out the full interval.
+Persistent=true
+# Two machines syncing the same account on the same schedule collide; a
+# random offset keeps them out of each other's way.
+RandomizedDelaySec=30s
+AccuracySec=10s
+
+[Install]
+WantedBy=timers.target

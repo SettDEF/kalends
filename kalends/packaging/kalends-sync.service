@@ -1,0 +1,13 @@
+[Unit]
+Description=Kalends — sync with the configured remote
+Documentation=https://github.com/SettDEF/desktop-apps
+# No point trying without a network; the timer will come round again.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/kalends sync
+# 3 is "no sync configured", which is a state, not a fault — do not let it
+# spam the journal on a machine where sync was never set up.
+SuccessExitStatus=0 3

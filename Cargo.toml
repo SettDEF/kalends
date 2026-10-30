@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+members = ["icalcore", "kalends/kalendsd"]
+
+[profile.release]
+opt-level = 2
+strip = true

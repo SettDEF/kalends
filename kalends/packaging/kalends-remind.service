@@ -1,0 +1,11 @@
+[Unit]
+Description=Kalends — fire reminders for upcoming events
+Documentation=https://github.com/SettDEF/desktop-apps
+
+[Service]
+Type=oneshot
+# %h so the unit works wherever the binary was installed for this user.
+ExecStart=%h/.local/bin/kalends remind --lead 10
+# A missing binary or an empty store is not a failure worth logging every
+# minute; a real error still surfaces in the journal.
+SuccessExitStatus=0 1

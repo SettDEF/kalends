@@ -1,0 +1,104 @@
+import QtQuick
+import QtQuick.Layouts
+import "." as App
+
+/**
+ * One-of-N, as a single track with an indicator that slides.
+ *
+ * Not four buttons that each colour themselves: with per-segment fills, a
+ * hover draws a second pill beside the selected one and the eye reads "two
+ * selected" before it reads "two shades". One indicator cannot lie that way.
+ *
+ * `model` is a list of { key, label }. `current` is the selected key.
+ */
+Rectangle {
+    id: root
+
+    property var model: []
+    property string current: ""
+    signal picked(string key)
+
+    implicitHeight: 32
+    radius: App.Appearance.rounding.full
+    color: App.Appearance.surfaceContainer
+
+    // the keyboard: Tab to it, ← / → picks the neighbour (Home / End the ends)
+    activeFocusOnTab: root.visible
+    function step(by) {
+        const keys = root.model.map(m => m.key);
+        const i = Math.max(0, keys.indexOf(root.current));
+        const to = Math.max(0, Math.min(keys.length - 1, i + by));
+        if (to !== i) root.picked(keys[to]);
+    }
+    Keys.onPressed: e => {
+        const by = { [Qt.Key_Left]: -1, [Qt.Key_Right]: 1, [Qt.Key_Home]: -1000, [Qt.Key_End]: 1000 }[e.key];
+        if (by === undefined) return;
+        root.step(by);
+        e.accepted = true;
+    }
+    App.FocusRing {}
+
+    Rectangle {
+        id: indicator
+        // Placed by whichever segment is selected, so the geometry comes from
+        // the layout rather than from arithmetic that has to be kept in step.
+        property real targetX: 0
+        property real targetW: 0
+        x: targetX
+        width: targetW
+        y: 3
+        height: parent.height - 6
+        radius: App.Appearance.rounding.full
+        color: App.Appearance.primary
+        visible: targetW > 0
+        Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+        Behavior on width { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+    }
+
+    RowLayout {
+        id: row
+        anchors { fill: parent; margins: 3 }
+        spacing: 2
+
+        Repeater {
+            model: root.model
+            delegate: Item {
+                id: seg
+                required property var modelData
+                readonly property bool sel: root.current === modelData.key
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                // Re-placed on resize too, not just on selection, so the
+                // indicator follows the window instead of being set once.
+                function place() {
+                    if (!seg.sel) return;
+                    indicator.targetX = row.x + seg.x;
+                    indicator.targetW = seg.width;
+                }
+                onSelChanged: place()
+                onXChanged: place()
+                onWidthChanged: place()
+                Component.onCompleted: place()
+
+                HoverHandler { id: hov; cursorShape: Qt.PointingHandCursor }
+                TapHandler { onTapped: root.picked(seg.modelData.key) }
+
+                Text {
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: seg.modelData.label
+                    font.family: App.Appearance.font.family
+                    font.pixelSize: App.Appearance.font.smaller
+                    font.weight: seg.sel ? Font.DemiBold : Font.Normal
+                    // Hover brightens the label rather than drawing a pill.
+                    color: seg.sel ? App.Appearance.textOnPrimary
+                         : hov.hovered ? App.Appearance.onSurface
+                         : App.Appearance.onSurfaceVariant
+                    Behavior on color { ColorAnimation { duration: 120 } }
+                }
+            }
+        }
+    }
+}
